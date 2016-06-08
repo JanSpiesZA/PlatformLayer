@@ -6,6 +6,10 @@ import org.openkinect.processing.*;
 // Kinect Library object
 Kinect kinect;
 
+
+float kinectMaxRange = 4.0;  //Max value for normal sensing distance, measured in meters
+
+
 // We'll use a lookup table so that we don't have to repeat the math over and over
 float[] depthLookUp = new float[2048];
 
@@ -16,7 +20,7 @@ float worldMapWidth = 640; //3737;  //To be used as the actual distance of the w
 float worldMapHeight = 640; //1137;  //  the amount of pixels of the png file in the x and y direction
 
 
-int cubeSize = 40;      //Occupancy grid size in cm's
+int tileSize = 40;      //Occupancy grid size in cm's
 
 
 int screenWidth = 640;  //screen width in pixels;
@@ -24,9 +28,9 @@ int screenHeight = int(screenWidth * (worldMapHeight/worldMapWidth));
 
 float scaleFactor = screenWidth / worldMapWidth;
 
-int maxHistogramX = int(worldMapWidth/cubeSize);
-int maxHistogramY = int(worldMapHeight/cubeSize);
-float scaledCubeSize = cubeSize*scaleFactor;
+int maxHistogramX = int(worldMapWidth/tileSize);
+int maxHistogramY = int(worldMapHeight/tileSize);
+float scaledtileSize = tileSize*scaleFactor;
 
 
 float maxKinectDetectDistance = 3.0;  //Maximum distance we are going to use the kinect to detect distance
@@ -170,9 +174,9 @@ void drawWorld()
     for (int y = 0; y <  maxHistogramY; y++)
     {      
       fill(tile[x][y].gravityCol);
-      rect((x*scaledCubeSize),y*scaledCubeSize,scaledCubeSize,scaledCubeSize);
+      rect((x*scaledtileSize),y*scaledtileSize,scaledtileSize,scaledtileSize);
       fill(255);
-      text(tile[x][y].gravity, (x*scaledCubeSize+scaledCubeSize/2), y*scaledCubeSize+scaledCubeSize/2);
+      text(tile[x][y].gravity, (x*scaledtileSize+scaledtileSize/2), y*scaledtileSize+scaledtileSize/2);
     }
   }  
 }
@@ -182,13 +186,13 @@ void updateGravity(float _x, float _y)
   //Determine histogram weigths
   //for (int p = 0; p < maxParticles; p ++)
   //{
-  //  histo[int(particle[p].x/cubeSize)][int(particle[p].y/cubeSize)].gravity ++;   
+  //  histo[int(particle[p].x/tileSize)][int(particle[p].y/tileSize)].gravity ++;   
   //}  
-  int x = int(_x/cubeSize);
+  int x = int(_x/tileSize);
   if (x < 0) x = 0;
   if (x > maxHistogramX) x = maxHistogramX-1;
   
-  int y = int(_y/cubeSize);
+  int y = int(_y/tileSize);
   if (y < 0) y = 0;
   if (y > maxHistogramY) y = maxHistogramY-1;
   
