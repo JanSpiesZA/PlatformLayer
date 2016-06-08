@@ -1,11 +1,11 @@
-class HistNode
+class Tile
 {
   int gravity = 0;    //Number of points in tile
   color gravityCol = color(gravity);
   int[] arrayXY = {0,0};
   int[] worldXY = {0,0};
   
-  HistNode()
+  Tile()
   {
     gravityCol = color(200,150,150);
   }

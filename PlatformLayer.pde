@@ -1,3 +1,4 @@
+//Platform layer for MBot
 
 import org.openkinect.freenect.*;
 import org.openkinect.processing.*;
@@ -9,7 +10,7 @@ Kinect kinect;
 float[] depthLookUp = new float[2048];
 
 int maxParticles = 0;
-Particle[] particle = new Particle[maxParticles];
+//Particle[] particle = new Particle[maxParticles];
 
 float worldMapWidth = 640; //3737;  //To be used as the actual distance of the world map x axis, measured in cm
 float worldMapHeight = 640; //1137;  //  the amount of pixels of the png file in the x and y direction
@@ -57,7 +58,7 @@ float sensorPhi = 0.0;
 
 
 
-HistNode histo[][] = new HistNode[maxHistogramX][maxHistogramY];
+Tile tile[][] = new Tile[maxHistogramX][maxHistogramY];
 
 void setup()
 {  
@@ -79,7 +80,7 @@ void setup()
   {
     for (int y = 0; y < maxHistogramY; y++)
     {
-      histo[x][y] = new HistNode();
+      tile[x][y] = new Tile();
     }
   }
 }
@@ -168,10 +169,10 @@ void drawWorld()
   {
     for (int y = 0; y <  maxHistogramY; y++)
     {      
-      fill(histo[x][y].gravityCol);
+      fill(tile[x][y].gravityCol);
       rect((x*scaledCubeSize),y*scaledCubeSize,scaledCubeSize,scaledCubeSize);
       fill(255);
-      text(histo[x][y].gravity, (x*scaledCubeSize+scaledCubeSize/2), y*scaledCubeSize+scaledCubeSize/2);
+      text(tile[x][y].gravity, (x*scaledCubeSize+scaledCubeSize/2), y*scaledCubeSize+scaledCubeSize/2);
     }
   }  
 }
@@ -191,8 +192,8 @@ void updateGravity(float _x, float _y)
   if (y < 0) y = 0;
   if (y > maxHistogramY) y = maxHistogramY-1;
   
-  histo[x][y].gravity++;
-  histo[x][y].update();
+  tile[x][y].gravity++;
+  tile[x][y].update();
 }
 
 void resetNodes()
@@ -200,7 +201,7 @@ void resetNodes()
   for(int y = 0; y < maxHistogramY; y++)
   for(int x = 0; x < maxHistogramX; x++)
   {
-    histo[x][y].clearGravity();
+    tile[x][y].clearGravity();
   }
 }
 
