@@ -40,7 +40,7 @@ int skip=10;
 
 Robot myrobot = new Robot();
 
-PVector robotPos = new PVector(screenWidth/2, screenHeight);
+PVector robotPos = new PVector(screenWidth/2, screenHeight, 0.0);
 float robotDiameter = 46 * scaleFactor; //Physical diameter of robot measured in cm's
 
 float x_temp = 0.0;
@@ -57,9 +57,11 @@ float moveGain = 0.01;
 float turnGain = 0.1;
 float errorAngle = 0.0;
 
-float sensorX = 0.0;
-float sensorY = 30.0;
-float sensorPhi = 0.0;
+float sensorX = robotPos.x + 0.0;
+float sensorY = robotPos.y + 0.0;
+float sensorPhi = robotPos.z + 0.0;
+
+float oldMillis, newMillis;
 
 
 
@@ -109,9 +111,16 @@ void draw()
   //drawTarget();
   plotRobot();
   
-  //resetNodes();
+  resetNodes();
   
-  //drawPixels();
+  drawPixels();
+  
+  oldMillis = newMillis;
+    newMillis = millis();
+    textSize(16);  
+    textAlign(LEFT, TOP);
+    fill(0);
+    text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,5);
   
   
   
@@ -127,44 +136,36 @@ void drawPixels()
 {
  // Get the raw depth as array of integers
  int[] depth = kinect.getRawDepth();
- 
- transRot(myrobot.x, myrobot.y, myrobot.heading, sensorX, sensorY);
-    ellipse(x_temp,y_temp,10,10);
   
  for (int x = 0; x < kinect.width; x += skip) 
  {
    for (int y = 0; y < kinect.height; y += skip) 
    {
-     int offset = x + y*kinect.width;
+    int offset = x + y*kinect.width;
 
      // Convert kinect data to world xyz coordinate
      int rawDepth = depth[offset];
      PVector v = depthToWorld(x, y, rawDepth);
      
-    v.x *= 100;      //Convert mm measurements into cm's
+    v.x *= 100;      //Convert depth value from meters into mm
     v.z *= 100;
     
-    v.x *= scaleFactor;
+    v.x *= scaleFactor;  //Multiply values with scale factor 
     v.z *= scaleFactor;
          
-     transRot(myrobot.x, myrobot.y, myrobot.heading, v.x, -v.z);     
+     //transRot(robotPos.x, robotPos.y, robotPos.z, v.x, -v.z);     
      
-     if (v.z > 0 && v.z < 400)    //Test for any invalid depth values      
+     if (v.z > 0 && v.z < maxKinectDetectNormal*scaleFactor)    //Test for any invalid depth values      
      {
         fill(255);     
-        ellipse((x_temp*scaleFactor),y_temp*scaleFactor,5,5);
-        updateGravity((x_temp*scaleFactor),y_temp*scaleFactor);
+        //ellipse((x_temp*scaleFactor),y_temp*scaleFactor,5,5);
         
-        transRot(myrobot.x, myrobot.y, myrobot.heading, sensorX, sensorY);
+        ellipse(robotPos.x + v.x, robotPos.y - v.z ,5,5);
+        updateGravity(robotPos.x + v.x,robotPos.y - v.z );
+        
+        transRot(robotPos.x, robotPos.y, robotPos.z, sensorX, sensorY);
         ellipse(x_temp,y_temp,10,10);
      }
-     
-     //if (v.z > 0 && v.z < 400)    //Test for any invalid depth values      
-     //{
-     //fill(255);
-     //ellipse((v.x*scaleFactor+xOffset),height - v.z*scaleFactor,5,5);
-     //updateGravity((v.x+worldMapWidth/2),worldMapHeight - v.z);
-     //}
    }
  }  
 }
@@ -192,11 +193,11 @@ void updateGravity(float _x, float _y)
   //{
   //  histo[int(particle[p].x/tileSize)][int(particle[p].y/tileSize)].gravity ++;   
   //}  
-  int x = int(_x/tileSize);
+  int x = int(_x/(tileSize*scaleFactor));
   if (x < 0) x = 0;
   if (x > maxHistogramX) x = maxHistogramX-1;
   
-  int y = int(_y/tileSize);
+  int y = int(_y/(tileSize*scaleFactor));
   if (y < 0) y = 0;
   if (y > maxHistogramY) y = maxHistogramY-1;
   
