@@ -40,6 +40,9 @@ int skip=10;
 
 Robot myrobot = new Robot();
 
+PVector robotPos = new PVector(screenWidth/2, screenHeight);
+float robotDiameter = 46 * scaleFactor; //Physical diameter of robot measured in cm's
+
 float x_temp = 0.0;
 float y_temp = 0.0;
 
@@ -104,7 +107,7 @@ void draw()
   
   //fill(255,0,0);
   //drawTarget();
-  //plotRobot();
+  plotRobot();
   
   //resetNodes();
   
@@ -212,19 +215,21 @@ void resetNodes()
 
 void plotRobot()
 {
-  float deltaX = goalX - myrobot.x;
-  float deltaY = goalY - myrobot.y;  
-  float targetAngle = atan2(deltaY, deltaX);    
-  float distanceToTarget = sqrt(pow(deltaX,2) + pow(deltaY,2));
+  fill(255);
+  ellipse (robotPos.x, robotPos.y, robotDiameter, robotDiameter);
+  //float deltaX = goalX - myrobot.x;
+  //float deltaY = goalY - myrobot.y;  
+  //float targetAngle = atan2(deltaY, deltaX);    
+  //float distanceToTarget = sqrt(pow(deltaX,2) + pow(deltaY,2));
   
-  errorAngle = targetAngle - myrobot.heading;
-  if (errorAngle < -PI) errorAngle += (2*PI);
-  if (errorAngle > PI) errorAngle -= (2*PI);  
+  //errorAngle = targetAngle - myrobot.heading;
+  //if (errorAngle < -PI) errorAngle += (2*PI);
+  //if (errorAngle > PI) errorAngle -= (2*PI);  
   
-  moveAngle = min (myrobot.maxTurnRate, (turnGain * errorAngle));  //P controller to turn towards goal
-  moveSpeed = min (myrobot.maxSpeed ,(moveGain * (distanceToTarget))); 
-  //myrobot.move(moveAngle,moveSpeed);    
-  myrobot.display();
+  //moveAngle = min (myrobot.maxTurnRate, (turnGain * errorAngle));  //P controller to turn towards goal
+  //moveSpeed = min (myrobot.maxSpeed ,(moveGain * (distanceToTarget))); 
+  ////myrobot.move(moveAngle,moveSpeed);    
+  //myrobot.display();
 }
 
 void mousePressed()
