@@ -6,8 +6,8 @@ import org.openkinect.processing.*;
 // Kinect Library object
 Kinect kinect;
 
-
-float kinectMaxRange = 4.0;  //Max value for normal sensing distance, measured in meters
+float maxKinectDetectNormal = 300.0;  //Maximum distance we are going to use the kinect to detect distance, measured in cm's
+float maxKinectDetectTooFar = 800.0;
 
 
 // We'll use a lookup table so that we don't have to repeat the math over and over
@@ -16,24 +16,23 @@ float[] depthLookUp = new float[2048];
 int maxParticles = 0;
 //Particle[] particle = new Particle[maxParticles];
 
-float worldMapWidth = 640; //3737;  //To be used as the actual distance of the world map x axis, measured in cm
-float worldMapHeight = 640; //1137;  //  the amount of pixels of the png file in the x and y direction
+
+int tileSize = 20;      //Occupancy grid size in cm's
+
+float worldMapHeight = maxKinectDetectNormal;  //  the amount of pixels of the png file in the x and y direction
+float tempWorldWidth = 2 * int(tan(radians(45))*worldMapHeight);  //To be used as the actual distance of the world map x axis, measured in cm 
+float worldMapWidth = ceil(tempWorldWidth / tileSize) * tileSize;
+
+int screenHeight = 600;
 
 
-int tileSize = 40;      //Occupancy grid size in cm's
+float scaleFactor = screenHeight / worldMapHeight;
+int screenWidth = int(worldMapWidth * scaleFactor);
 
-
-int screenWidth = 640;  //screen width in pixels;
-int screenHeight = int(screenWidth * (worldMapHeight/worldMapWidth));
-
-float scaleFactor = screenWidth / worldMapWidth;
 
 int maxHistogramX = int(worldMapWidth/tileSize);
 int maxHistogramY = int(worldMapHeight/tileSize);
-float scaledtileSize = tileSize*scaleFactor;
-
-
-float maxKinectDetectDistance = 3.0;  //Maximum distance we are going to use the kinect to detect distance
+float scaledtileSize = tileSize * scaleFactor;
 
 float xOffset = screenWidth/2;
 
@@ -92,22 +91,24 @@ void setup()
 void draw()
 {   
   clear();
-  println(maxHistogramX+":"+maxHistogramY+":"+scaleFactor);
-  //image(kinect.getVideoImage(), 0, 0);
-  stroke(128);
+  println("worldWidth: "+worldMapWidth+", worldHeight: "+worldMapHeight);
+  println("screenWidth: "+screenWidth+", screenHeight: "+screenHeight);
+  println("x: "+maxHistogramX+", y:"+maxHistogramY+", scaleFactor: "+scaleFactor);
+  ////image(kinect.getVideoImage(), 0, 0);
+  //stroke(128);
   
   
   
   
   drawWorld();
   
-  fill(255,0,0);
-  drawTarget();
-  plotRobot();
+  //fill(255,0,0);
+  //drawTarget();
+  //plotRobot();
   
-  resetNodes();
+  //resetNodes();
   
-  drawPixels();
+  //drawPixels();
   
   
   
