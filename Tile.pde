@@ -50,7 +50,7 @@ class Tile
           force = pow(distance,2);
           
           field.div(force);
-          field.mult(gravity * 1000);
+          field.mult(gravity * 10000);
           
           gravityCol = color(200,150,150);
           break;

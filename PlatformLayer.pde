@@ -6,7 +6,7 @@ import org.openkinect.processing.*;
 // Kinect Library object
 Kinect kinect;
 
-float maxKinectDetectNormal = 300.0;  //Maximum distance we are going to use the kinect to detect distance, measured in cm's
+float maxKinectDetectNormal = 400.0;  //Maximum distance we are going to use the kinect to detect distance, measured in cm's
 float maxKinectDetectTooFar = 800.0;
 
 
@@ -38,7 +38,7 @@ float xOffset = screenWidth/2;
 
 int skip=10;
 
-PVector robotPos = new PVector(screenWidth/2, screenHeight, 0.0);
+PVector robotPos = new PVector(screenWidth/2, screenHeight-60, 0.0);
 float robotDiameter = 46 * scaleFactor; //Physical diameter of robot measured in cm's
 
 float x_temp = 0.0;
@@ -60,6 +60,10 @@ float sensorY = robotPos.y + 0.0;
 float sensorPhi = robotPos.z + 0.0;
 
 float oldMillis, newMillis;
+
+PVector vectorFWD = new PVector(0,-50 * scaleFactor);
+PVector vectorAO = new PVector();
+PVector vectorAOFWD = new PVector();
 
 
 
@@ -113,20 +117,58 @@ void draw()
   
   drawPixels();
   
+  calcVecAO();
+  calcVecAOFWD();  
+  
+  drawVectors();
+  
   oldMillis = newMillis;
-    newMillis = millis();
-    textSize(16);  
-    textAlign(LEFT, TOP);
-    fill(0);
-    text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,5);
+  newMillis = millis();
+  textSize(16);  
+  textAlign(LEFT, TOP);
+  fill(0);
+  text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,5);
+}
+
+void calcVecAOFWD()
+{
+  //vectorFWD.normalize();
+  //vectorAO.normalize();
+  vectorAOFWD = PVector.add(vectorFWD, vectorAO);
+  //vectorAOFWD.mult(100);
+}
+
+void calcVecAO()
+{
+  vectorAO.mult(0);
+  for (int x = 0; x < maxHistogramX; x++)
+  {
+    for (int y = 0; y < maxHistogramY; y++)
+    {
+      //If any tile's gravity is greater than 0, add that vector to the avoid obstacle vector
+      if (tile[x][y].gravity != 0)
+      {
+        vectorAO.add(tile[x][y].field);              
+      }
+    }
+  }
+}
+
+void drawVectors()
+{  
+  //Draws a vector pointing straight forward
+  strokeWeight(1);
+  stroke(0);
+  line(robotPos.x, robotPos.y, robotPos.x + vectorFWD.x, robotPos.y + vectorFWD.y);
   
+  //Draws a vector pointing away from all the obstacles
+  strokeWeight(4);
+  stroke(255,0,0);
+  line(robotPos.x, robotPos.y, robotPos.x + vectorAO.x, robotPos.y + vectorAO.y);
   
-  
-  
-  
-  
-  
-  
+  strokeWeight(2);
+  stroke(0,255,0);
+  line(robotPos.x, robotPos.y, robotPos.x + vectorAOFWD.x, robotPos.y + vectorAOFWD.y);
   
 }
 
