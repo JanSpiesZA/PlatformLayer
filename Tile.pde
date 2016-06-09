@@ -32,13 +32,12 @@ class Tile
   }
   
   void update()
-  {
-    gravityCol = color(min(gravity,255)); //map(gravity,0,2048,0,128));
-    
+  { 
     switch(gravity)
     {
       case 0:
       {
+        gravityCol = color(150,200,150); //color(min(gravity,255)); //map(gravity,0,2048,0,128));
         break;
       }
       default:
@@ -46,8 +45,14 @@ class Tile
           field.x = robotPos.x - tilePos.x;
           field.y = robotPos.y - tilePos.y;
           float distance = PVector.dist(robotPos, tilePos);
-          //field.normalize();
-          //for
+          field.normalize();
+          
+          force = pow(distance,2);
+          
+          field.div(force);
+          field.mult(gravity * 1000);
+          
+          gravityCol = color(200,150,150);
           break;
         }
     }      
