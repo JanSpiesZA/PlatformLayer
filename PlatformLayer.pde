@@ -88,7 +88,7 @@ void setup()
   {
     for (int y = 0; y < maxHistogramY; y++)
     {
-      tile[x][y] = new Tile();
+      tile[x][y] = new Tile(int(x*scaledtileSize + scaledtileSize/2), int(y*scaledtileSize + scaledtileSize/2));
     }
   }
 }
@@ -109,11 +109,11 @@ void draw()
   
   //fill(255,0,0);
   //drawTarget();
-  plotRobot();
+  //plotRobot();
   
-  resetNodes();
+  //resetNodes();
   
-  drawPixels();
+  //drawPixels();
   
   oldMillis = newMillis;
     newMillis = millis();
@@ -177,11 +177,15 @@ void drawWorld()
   for (int x = 0; x < maxHistogramX; x++)
   {
     for (int y = 0; y <  maxHistogramY; y++)
-    {      
-      fill(tile[x][y].gravityCol);
-      rect((x*scaledtileSize),y*scaledtileSize,scaledtileSize,scaledtileSize);
-      fill(255);
-      text(tile[x][y].gravity, (x*scaledtileSize+scaledtileSize/2), y*scaledtileSize+scaledtileSize/2);
+    {
+      tile[x][y].update();
+      tile[x][y].tileDraw();
+      
+      
+      
+      //fill(tile[x][y].gravityCol);
+      //rect((x*scaledtileSize),y*scaledtileSize,scaledtileSize,scaledtileSize);
+      
     }
   }  
 }
