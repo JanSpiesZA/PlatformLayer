@@ -132,10 +132,10 @@ void draw()
 
 void calcVecAOFWD()
 {
-  //vectorFWD.normalize();
-  //vectorAO.normalize();
+  vectorFWD.normalize();
+  vectorAO.normalize();
   vectorAOFWD = PVector.add(vectorFWD, vectorAO);
-  //vectorAOFWD.mult(100);
+  vectorAOFWD.mult(100);
 }
 
 void calcVecAO()
