@@ -38,8 +38,6 @@ float xOffset = screenWidth/2;
 
 int skip=10;
 
-Robot myrobot = new Robot();
-
 PVector robotPos = new PVector(screenWidth/2, screenHeight, 0.0);
 float robotDiameter = 46 * scaleFactor; //Physical diameter of robot measured in cm's
 
@@ -109,11 +107,11 @@ void draw()
   
   //fill(255,0,0);
   //drawTarget();
-  //plotRobot();
+  plotRobot();
   
-  //resetNodes();
+  resetNodes();
   
-  //drawPixels();
+  drawPixels();
   
   oldMillis = newMillis;
     newMillis = millis();
@@ -247,8 +245,8 @@ void changeGoal()
 {
   goalX = mouseX;
   goalY = mouseY;
-  startX = myrobot.x;
-  startY = myrobot.y; 
+  startX = robotPos.x;
+  startY = robotPos.y; 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 void drawTarget()
