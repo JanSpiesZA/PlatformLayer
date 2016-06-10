@@ -231,14 +231,13 @@ void drawWorld()
     }
   }  
   
-  //for (int x = 0; x < maxHistogramX; x++)
-  //{
-  //  for (int y = 0; y <  maxHistogramY; y++)
-  //  {
-  //    tile[x][y].update();
-  //    tile[x][y].drawTile();
-  //  }
-  //}  
+  for (int x = 0; x < maxHistogramX; x++)
+  {
+    for (int y = 0; y <  maxHistogramY; y++)
+    {
+      tile[x][y].drawTileForce();     
+    }
+  }  
 }
 
 void updateGravity(float _x, float _y)
