@@ -77,6 +77,8 @@ class Tile
   void drawTileText()
   {
     //Writes the gravity value in the tile
+    textSize(16);
+    textAlign (CENTER);
     fill(255);
     text(gravity, tilePos.x, tilePos.y);    
   }
