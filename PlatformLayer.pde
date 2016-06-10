@@ -211,7 +211,7 @@ void drawPixels()
 }
 
 
-//Draws the tiles of the histogram with the gravity being represented by the amount of data in each node
+//Draws the tiles of the world
 void drawWorld()
 {
   for (int x = 0; x < maxHistogramX; x++)
@@ -219,13 +219,7 @@ void drawWorld()
     for (int y = 0; y <  maxHistogramY; y++)
     {
       tile[x][y].update();
-      tile[x][y].tileDraw();
-      
-      
-      
-      //fill(tile[x][y].gravityCol);
-      //rect((x*scaledtileSize),y*scaledtileSize,scaledtileSize,scaledtileSize);
-      
+      tile[x][y].drawTile();
     }
   }  
 }
