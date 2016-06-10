@@ -98,9 +98,9 @@ void setup()
 void draw()
 {   
   clear();
-  println("worldWidth: "+worldMapWidth+", worldHeight: "+worldMapHeight);
-  println("screenWidth: "+screenWidth+", screenHeight: "+screenHeight);
-  println("x: "+maxHistogramX+", y:"+maxHistogramY+", scaleFactor: "+scaleFactor);
+  //println("worldWidth: "+worldMapWidth+", worldHeight: "+worldMapHeight);
+  //println("screenWidth: "+screenWidth+", screenHeight: "+screenHeight);
+  //println("x: "+maxHistogramX+", y:"+maxHistogramY+", scaleFactor: "+scaleFactor);
   ////image(kinect.getVideoImage(), 0, 0);
   //stroke(128);
   
@@ -131,11 +131,8 @@ void draw()
 }
 
 void calcVecAOFWD()
-{
-  vectorFWD.normalize();
-  vectorAO.normalize();
-  vectorAOFWD = PVector.add(vectorFWD, vectorAO);
-  vectorAOFWD.mult(100);
+{  
+  vectorAOFWD = PVector.add(vectorFWD, vectorAO); 
 }
 
 void calcVecAO()
@@ -157,7 +154,7 @@ void calcVecAO()
 void drawVectors()
 {  
   //Draws a vector pointing straight forward
-  strokeWeight(1);
+  strokeWeight(2);
   stroke(0);
   line(robotPos.x, robotPos.y, robotPos.x + vectorFWD.x, robotPos.y + vectorFWD.y);
   
@@ -223,7 +220,7 @@ void drawWorld()
       tile[x][y].update();
       tile[x][y].drawTile();
     }
-  }
+  }  
   
   for (int x = 0; x < maxHistogramX; x++)
   {

@@ -28,6 +28,9 @@ class Tile
   void clearGravity()
   {
     gravity = 0;
+    force = 0.0;
+    field.mult(0);
+    
     gravityCol = color(200,150,150);
   }
   
@@ -47,10 +50,10 @@ class Tile
           float distance = PVector.dist(robotPos, tilePos);
           field.normalize();
           
-          force = pow(distance,2);
+          force = 1000 / pow(distance,2);
           
-          field.div(force);
-          field.mult(gravity * 10000);
+          field.mult(force);
+          field.mult(gravity);
           
           gravityCol = color(200,150,150);
           break;
@@ -80,6 +83,6 @@ class Tile
     textSize(10);
     textAlign (CENTER);
     fill(255);
-    text(gravity, tilePos.x, tilePos.y);    
+    text(gravity, tilePos.x, tilePos.y);   
   }
 }
