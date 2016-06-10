@@ -58,20 +58,26 @@ class Tile
     }      
   }
   
-  void tileDraw()
+  void drawTile()
   {    
     stroke(150);        //Lines between tiles are black
     strokeWeight(1);  //Stroke weight makes the lines very light
     rectMode(CENTER);
     fill(gravityCol,200);
-    rect(tilePos.x, tilePos.y, scaledtileSize, scaledtileSize);  //Draws a rectangle to indicate the tile
-    
+    rect(tilePos.x, tilePos.y, scaledtileSize, scaledtileSize);  //Draws a rectangle to indicate the tile    
+  }  
+  
+  void drawTileForce()
+  {
     //Draws a flowfield indicator
     stroke(0);
-    line (tilePos.x, tilePos.y, tilePos.x + field.x, tilePos.y + field.y);
-    
+    line (tilePos.x, tilePos.y, tilePos.x + field.x, tilePos.y + field.y);    
+  }
+  
+  void drawTileText()
+  {
     //Writes the gravity value in the tile
     fill(255);
-    text(gravity, tilePos.x, tilePos.y);
-  }  
+    text(gravity, tilePos.x, tilePos.y);    
+  }
 }
