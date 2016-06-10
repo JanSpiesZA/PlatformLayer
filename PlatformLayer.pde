@@ -212,6 +212,8 @@ void drawPixels()
 
 
 //Draws the tiles of the world
+//Each element is drawn seperately in order to control the layering effect better.
+//  If not seperately new tile will overwrite the previous drawn tile and visual data will be lost
 void drawWorld()
 {
   for (int x = 0; x < maxHistogramX; x++)
