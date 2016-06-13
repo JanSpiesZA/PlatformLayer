@@ -38,7 +38,8 @@ float xOffset = screenWidth/2;
 
 int skip=10;
 
-PVector robotPos = new PVector(screenWidth/2, screenHeight-60, 0.0);
+PVector robotPos = new PVector(screenWidth/2, screenHeight-60, -PI/2);
+PVector goalPos = new PVector (50 * scaleFactor,0 * scaleFactor);    //Position of goal, in robot frame
 float robotDiameter = 46 * scaleFactor; //Physical diameter of robot measured in cm's
 
 float x_temp = 0.0;
@@ -60,6 +61,8 @@ float sensorY = robotPos.y + 0.0;
 float sensorPhi = robotPos.z + 0.0;
 
 float oldMillis, newMillis;
+
+PVector targetPos = new PVector(50.0, 0.0, 0.0);
 
 PVector vectorFWD = new PVector(0,-50 * scaleFactor);
 PVector vectorAO = new PVector();
@@ -104,13 +107,9 @@ void draw()
   ////image(kinect.getVideoImage(), 0, 0);
   //stroke(128);
   
+  drawWorld(); 
   
-  
-  
-  drawWorld();
-  
-  //fill(255,0,0);
-  //drawTarget();
+  drawTarget();
   plotRobot();
   
   resetNodes();
@@ -122,12 +121,24 @@ void draw()
   
   drawVectors();
   
+  
   oldMillis = newMillis;
   newMillis = millis();
   textSize(16);  
   textAlign(LEFT, TOP);
   fill(0);
   text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,5);
+  
+  
+  float angleVectorAOFWD = atan2(vectorAOFWD.y, vectorAOFWD.x); 
+  
+  
+  float errorAngle = angleVectorAOFWD - robotPos.z;
+  
+  println("angle of vectorAOFWD: "+angleVectorAOFWD);
+  if (errorAngle < (-PI)) errorAngle += 2*PI;
+  if (errorAngle > (PI)) errorAngle -= 2*PI;
+  println("errorAngle: "+errorAngle);
 }
 
 void calcVecAOFWD()
