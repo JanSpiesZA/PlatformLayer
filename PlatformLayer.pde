@@ -1,5 +1,8 @@
 //Platform layer for MBot
 
+import processing.serial.*;
+Serial myPort;
+
 import org.openkinect.freenect.*;
 import org.openkinect.processing.*;
 
@@ -96,6 +99,9 @@ void setup()
       tile[x][y] = new Tile(int(x*scaledtileSize + scaledtileSize/2), int(y*scaledtileSize + scaledtileSize/2));
     }
   }
+  
+  printArray(Serial.list());
+  myPort = new Serial(this, Serial.list()[0], 9600);  
 }
 
 void draw()
@@ -135,10 +141,10 @@ void draw()
   
   float errorAngle = angleVectorAOFWD - robotPos.z;
   
-  println("angle of vectorAOFWD: "+angleVectorAOFWD);
+  //println("angle of vectorAOFWD: "+angleVectorAOFWD);
   if (errorAngle < (-PI)) errorAngle += 2*PI;
   if (errorAngle > (PI)) errorAngle -= 2*PI;
-  println("errorAngle: "+errorAngle);
+  //println("errorAngle: "+errorAngle);
 }
 
 void calcVecAOFWD()
