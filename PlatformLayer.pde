@@ -152,11 +152,11 @@ void draw()
   textSize(16);  
   textAlign(LEFT, TOP);
   fill(0);
-  text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,5);
-  text("avoid angle: "+errorAngle,5,25);
-  String txString = ">v"+100+'\r'; 
+  text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,screenHeight - 90);
+  text("avoid angle: "+errorAngle,5,screenHeight - 60);
+  String txString = "Serial CMD: >v"+100+'\r'; 
   myPort.write(txString);
-  text(txString,5,50);
+  text(txString,5,screenHeight - 30);
   
   
 }
