@@ -66,13 +66,15 @@ float sensorPhi = robotPos.z + 0.0;
 
 
 
-float oldMillis, newMillis;
+int oldMillis, newMillis, oldTxMillis;
 
 PVector targetPos = new PVector(50.0, 0.0, 0.0);
 
 PVector vectorFWD = new PVector(0,-50 * scaleFactor);
 PVector vectorAO = new PVector();
 PVector vectorAOFWD = new PVector();
+
+int delta_t = 500;      //Time waited between sending serial data
 
 
 
@@ -154,11 +156,18 @@ void draw()
   fill(0);
   text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,screenHeight - 90);
   text("avoid angle: "+errorAngle,5,screenHeight - 60);
-  String txString = "Serial CMD: >v"+100+'\r'; 
-  myPort.write(txString);
+  String txString = "Serial CMD: >v"+100+'\r';
   text(txString,5,screenHeight - 30);
   
-  
+  //Tx serial data only once every delta_t milliseconds
+  int time = millis();
+  int interval = time - oldTxMillis;
+  if (interval > delta_t)
+  {
+    print('.');
+    myPort.write(txString);
+    oldTxMillis = time;
+  }
 }
 
 void calcVecAOFWD()
