@@ -11,6 +11,7 @@ Kinect kinect;
 
 float maxKinectDetectNormal = 400.0;  //Maximum distance we are going to use the kinect to detect distance, measured in cm's
 float maxKinectDetectTooFar = 800.0;
+float kinectFOW = 60.0;
 
 
 // We'll use a lookup table so that we don't have to repeat the math over and over
@@ -23,7 +24,7 @@ int maxParticles = 0;
 int tileSize = 20;      //Occupancy grid size in cm's
 
 float worldMapHeight = maxKinectDetectNormal;  //  the amount of pixels of the png file in the x and y direction
-float tempWorldWidth = 2 * int(tan(radians(45))*worldMapHeight);  //To be used as the actual distance of the world map x axis, measured in cm 
+float tempWorldWidth = 2 * int(tan(radians(kinectFOW/2))*worldMapHeight);  //To be used as the actual distance of the world map x axis, measured in cm 
 float worldMapWidth = ceil(tempWorldWidth / tileSize) * tileSize;
 
 int screenHeight = 600;
@@ -63,6 +64,8 @@ float sensorX = robotPos.x + 0.0;
 float sensorY = robotPos.y + 0.0;
 float sensorPhi = robotPos.z + 0.0;
 
+
+
 float oldMillis, newMillis;
 
 PVector targetPos = new PVector(50.0, 0.0, 0.0);
@@ -101,7 +104,7 @@ void setup()
   }
   
   printArray(Serial.list());
-  myPort = new Serial(this, Serial.list()[0], 9600);  
+  myPort = new Serial(this, Serial.list()[0], 115200);  
 }
 
 void draw()
@@ -115,7 +118,7 @@ void draw()
   
   drawWorld(); 
   
-  drawTarget();
+  //drawTarget();
   plotRobot();
   
   resetNodes();
@@ -128,12 +131,10 @@ void draw()
   drawVectors();
   
   
-  oldMillis = newMillis;
-  newMillis = millis();
-  textSize(16);  
-  textAlign(LEFT, TOP);
-  fill(0);
-  text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,5);
+  //Print Kinect Sensor Field of View (FOW) lines on display
+  float deltaX = tan(radians(kinectFOW/2)) * 400;
+  line(robotPos.x, robotPos.y, robotPos.x - deltaX, 0);
+  line(robotPos.x, robotPos.y, robotPos.x + deltaX, 0);
   
   
   float angleVectorAOFWD = atan2(vectorAOFWD.y, vectorAOFWD.x); 
@@ -145,6 +146,19 @@ void draw()
   if (errorAngle < (-PI)) errorAngle += 2*PI;
   if (errorAngle > (PI)) errorAngle -= 2*PI;
   //println("errorAngle: "+errorAngle);
+  
+  oldMillis = newMillis;
+  newMillis = millis();
+  textSize(16);  
+  textAlign(LEFT, TOP);
+  fill(0);
+  text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,5);
+  text("avoid angle: "+errorAngle,5,25);
+  String txString = ">v"+100+'\r'; 
+  myPort.write(txString);
+  text(txString,5,50);
+  
+  
 }
 
 void calcVecAOFWD()
