@@ -74,7 +74,7 @@ PVector vectorFWD = new PVector(0,-50 * scaleFactor);
 PVector vectorAO = new PVector();
 PVector vectorAOFWD = new PVector();
 
-int delta_t = 500;      //Time waited between sending serial data
+int delta_t = 1000;      //Time waited between sending serial data
 
 
 
@@ -106,21 +106,23 @@ void setup()
   }
   
   printArray(Serial.list());
-  myPort = new Serial(this, Serial.list()[0], 115200);  
+  myPort = new Serial(this, "COM3", 9600);  
+  delay(2000);      //Delay to make sure the serial port initialises correctly
 }
 
 void draw()
 {   
   clear();
+  
   //println("worldWidth: "+worldMapWidth+", worldHeight: "+worldMapHeight);
   //println("screenWidth: "+screenWidth+", screenHeight: "+screenHeight);
   //println("x: "+maxHistogramX+", y:"+maxHistogramY+", scaleFactor: "+scaleFactor);
   ////image(kinect.getVideoImage(), 0, 0);
   //stroke(128);
   
-  drawWorld(); 
+  drawWorld();
   
-  //drawTarget();
+  ////drawTarget();
   plotRobot();
   
   resetNodes();
@@ -156,14 +158,14 @@ void draw()
   fill(0);
   text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,screenHeight - 90);
   text("avoid angle: "+errorAngle,5,screenHeight - 60);
-  String txString = "Serial CMD: >v"+100+'\r';
-  text(txString,5,screenHeight - 30);
+  String txString = ".v00\r\n";  
   
   //Tx serial data only once every delta_t milliseconds
   int time = millis();
   int interval = time - oldTxMillis;
   if (interval > delta_t)
   {
+    text(txString,5,screenHeight - 30);
     print('.');
     myPort.write(txString);
     oldTxMillis = time;
