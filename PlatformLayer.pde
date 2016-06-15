@@ -106,8 +106,12 @@ void setup()
   }
   
   printArray(Serial.list());
-  myPort = new Serial(this, "COM3", 9600);  
-  delay(2000);      //Delay to make sure the serial port initialises correctly
+  myPort = new Serial(this, "COM3", 115200);  
+  delay(5000);      //Delay to make sure the serial port initialises correctly
+  myPort.write("<v00\r");
+  delay(1000);
+  myPort.write("<w0\r");
+  delay(1000);
 }
 
 void draw()
@@ -157,18 +161,22 @@ void draw()
   textAlign(LEFT, TOP);
   fill(0);
   text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,screenHeight - 90);
-  text("avoid angle: "+errorAngle,5,screenHeight - 60);
-  String txString = ".v00\r\n";  
+  text("avoid angle: "+str(errorAngle),5,screenHeight - 60);
+  String txString = "<w"+str(errorAngle)+"\r";  
+  //String txString = "<v"+str(1.20)+"\r";
   
   //Tx serial data only once every delta_t milliseconds
   int time = millis();
   int interval = time - oldTxMillis;
   if (interval > delta_t)
   {
+    //myPort.clear();
     text(txString,5,screenHeight - 30);
-    print('.');
-    myPort.write(txString);
+    print(txString);
+    //myPort.write(txString);
+    txString = "";
     oldTxMillis = time;
+    //myPort.clear();
   }
 }
 
