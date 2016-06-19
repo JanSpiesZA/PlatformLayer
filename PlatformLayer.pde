@@ -74,7 +74,7 @@ PVector vectorFWD = new PVector(0,-50 * scaleFactor);
 PVector vectorAO = new PVector();
 PVector vectorAOFWD = new PVector();
 
-int delta_t = 1000;      //Time waited between sending serial data
+int delta_t = 500;      //Time waited between sending serial data
 
 
 
@@ -144,6 +144,10 @@ void draw()
   line(robotPos.x, robotPos.y, robotPos.x - deltaX, 0);
   line(robotPos.x, robotPos.y, robotPos.x + deltaX, 0);
   
+  float fwdV = vectorAOFWD.mag();
+  
+  println(fwdV);
+  
   
   float angleVectorAOFWD = atan2(vectorAOFWD.y, vectorAOFWD.x); 
   
@@ -153,6 +157,15 @@ void draw()
   //println("angle of vectorAOFWD: "+angleVectorAOFWD);
   if (errorAngle < (-PI)) errorAngle += 2*PI;
   if (errorAngle > (PI)) errorAngle -= 2*PI;
+  
+  
+  
+  errorAngle = min (errorAngle, 1.0);
+  errorAngle = max (errorAngle, -1.0);
+  
+  String tempAngle = nf(errorAngle,1,2);   //Format errorAngle to 2 decimal points
+  errorAngle = float(tempAngle);
+  errorAngle *= -1000.0;        //Invert turning Angle and multiply by 1000 to convert floating point to intgere
   //println("errorAngle: "+errorAngle);
   
   oldMillis = newMillis;
@@ -172,9 +185,11 @@ void draw()
   {
     //myPort.clear();
     text(txString,5,screenHeight - 30);
-    print(txString);
-    //myPort.write(txString);
-    txString = "";
+    //print(txString);
+    myPort.write(txString);
+    delay(1);                //Delay after first serial comms
+    myPort.write("<v"+str(fwdV)+"\r");   
+    
     oldTxMillis = time;
     //myPort.clear();
   }
