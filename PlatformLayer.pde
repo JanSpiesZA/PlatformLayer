@@ -76,7 +76,7 @@ PVector vectorAOFWD = new PVector();
 
 int delta_t = 500;      //Time waited between sending serial data
 
-
+boolean allowTX = false;    //Allows data to be transmitted to the driverlayer
 
 
 Tile tile[][] = new Tile[maxHistogramX][maxHistogramY];
@@ -175,7 +175,7 @@ void draw()
   fill(0);
   text("refresh rate (hz): "+1000/(newMillis - oldMillis),5,screenHeight - 90);
   text("avoid angle: "+str(errorAngle),5,screenHeight - 60);
-  String txString = "<w"+str(errorAngle)+"\r";  
+  //String txString = "<w"+str(errorAngle)+"\r";  
   //String txString = "<v"+str(1.20)+"\r";
   
   //Tx serial data only once every delta_t milliseconds
@@ -183,15 +183,24 @@ void draw()
   int interval = time - oldTxMillis;
   if (interval > delta_t)
   {
-    //myPort.clear();
-    text(txString,5,screenHeight - 30);
-    //print(txString);
-    myPort.write(txString);
-    delay(1);                //Delay after first serial comms
-    myPort.write("<v"+str(fwdV)+"\r");   
-    
-    oldTxMillis = time;
-    //myPort.clear();
+    if (allowTX)
+    {
+      println("TXING!!!");
+      //text(txString,5,screenHeight - 30);
+      //print(txString);
+      //myPort.write(txString);
+      myPort.write("<w"+str(errorAngle)+"\r");
+      delay(1);                //Delay after first serial comms
+      myPort.write("<v"+str(fwdV)+"\r");   
+      
+      oldTxMillis = time;
+      //myPort.clear();
+    } 
+    else
+    {
+      println("NO TX!");
+      
+    }
   }
 }
 
@@ -349,6 +358,17 @@ void plotRobot()
   //moveSpeed = min (myrobot.maxSpeed ,(moveGain * (distanceToTarget))); 
   ////myrobot.move(moveAngle,moveSpeed);    
   //myrobot.display();
+}
+
+void keyPressed()
+{
+  if (key == 'x')
+  {
+    allowTX = !allowTX;
+    myPort.write("<w0\r");
+    delay(1);
+    myPort.write("<v0\r");
+  }  
 }
 
 void mousePressed()
