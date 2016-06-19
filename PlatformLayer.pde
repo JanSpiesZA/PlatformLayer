@@ -78,6 +78,8 @@ int delta_t = 500;      //Time waited between sending serial data
 
 boolean allowTX = false;    //Allows data to be transmitted to the driverlayer
 
+float kinectTilt = 0.0;
+
 
 Tile tile[][] = new Tile[maxHistogramX][maxHistogramY];
 
@@ -112,6 +114,8 @@ void setup()
   delay(1000);
   myPort.write("<w0\r");
   delay(1000);
+  
+  kinectTilt = kinect.getTilt();        //Get tilt angle from kinect sensor
 }
 
 void draw()
@@ -138,19 +142,14 @@ void draw()
   
   drawVectors();
   
-  
   //Print Kinect Sensor Field of View (FOW) lines on display
   float deltaX = tan(radians(kinectFOW/2)) * 400;
   line(robotPos.x, robotPos.y, robotPos.x - deltaX, 0);
   line(robotPos.x, robotPos.y, robotPos.x + deltaX, 0);
   
-  float fwdV = vectorAOFWD.mag();
-  
-  println(fwdV);
-  
+  float fwdV = 2*vectorAOFWD.mag();
   
   float angleVectorAOFWD = atan2(vectorAOFWD.y, vectorAOFWD.x); 
-  
   
   float errorAngle = angleVectorAOFWD - robotPos.z;
   
@@ -189,6 +188,7 @@ void draw()
       //text(txString,5,screenHeight - 30);
       //print(txString);
       //myPort.write(txString);
+      println("v: "+fwdV+", w: "+errorAngle);
       myPort.write("<w"+str(errorAngle)+"\r");
       delay(1);                //Delay after first serial comms
       myPort.write("<v"+str(fwdV)+"\r");   
@@ -365,10 +365,24 @@ void keyPressed()
   if (key == 'x')
   {
     allowTX = !allowTX;
-    myPort.write("<w0\r");
+    myPort.write("<w0\r");    //Send w=0 to cancel rotation
     delay(1);
-    myPort.write("<v0\r");
+    myPort.write("<v0\r");    //Send v=0 to disable lateral movement
   }  
+  
+  if (key == 'w')
+  {
+    kinectTilt ++;
+    kinect.setTilt(kinectTilt);    
+    delay(500);
+  }
+  
+  if (key == 's')
+  {
+    kinectTilt --;
+    kinect.setTilt(kinectTilt);
+    delay(500);
+  }
 }
 
 void mousePressed()
